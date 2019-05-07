@@ -1,0 +1,22 @@
+body, html {
+    height: 100%;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 24px;
+}
+
+body {
+    margin: 0;
+}
+
+table, td {
+    min-width: 200px;
+    min-height: 200px;
+    margin: 0 auto;
+    border: 1px solid black;
+}
+
+#main {
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+}
