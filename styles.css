@@ -8,15 +8,30 @@ body {
     margin: 0;
 }
 
-table, td {
-    min-width: 200px;
-    min-height: 200px;
+/* table, td {
+    width: 50%;
+    height: 50%;
     margin: 0 auto;
     border: 1px solid black;
 }
+
+td {
+    width: 33.3%;
+    min-height: 200px;
+} */
 
 #main {
     margin: 0 auto;
     width: 100%;
     text-align: center;
+}
+
+table {
+    margin: 0 auto;
+}
+
+tr, td {
+    height: 100px;
+    width: 100px;
+    border: 1px solid black;
 }

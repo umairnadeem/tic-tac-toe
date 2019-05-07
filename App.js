@@ -10,7 +10,6 @@ class Player {
     }
 
     toggleCell(cell, rowIndex, colIndex) {
-        console.log('clocl')
         cell.append(this.symbol);
         this.board[rowIndex][colIndex] = 1;
     }
@@ -32,7 +31,6 @@ class Board {
 
     construct() {
         var table = document.getElementById('board');
-        console.log(table)
         var row, col;
         var arr = [];
         for (var r = 0; r < this.size; r++) {
@@ -79,8 +77,7 @@ class Board {
 class Round {
     constructor(board, ...players) {
         this.inSession = false;
-        this.prevWinner = null;
-        this.outcome = null;
+        this.prevWinnerIndex = null;
         this.board = board;
         this.players = players;
         this.currPlayer = null;
@@ -88,7 +85,10 @@ class Round {
     }
 
     begin() {
+        this.board.pieces = 0;
+        this.playerIndex = 0;
         this.inSession = true;
+        this.nextPlayer();
         this.board.clear();
         this.board.construct();
         this.players.forEach(player => {
@@ -103,38 +103,51 @@ class Round {
 
     handleMove(cell, rowIndex, colIndex) {
         if (cell.innerHTML === '' && this.inSession) {
-            this.playerIndex = this.playerIndex < this.players.length - 1 ? this.playerIndex+1 : 0;
-            this.currPlayer = this.players[this.playerIndex];
             this.currPlayer.toggleCell(cell, rowIndex, colIndex);
             this.board.pieces++;
             if (this.board.won(this.currPlayer)) {
                 this.wonBy(this.currPlayer);
-                alert(`Player ${this.currPlayer.symbol} wins!`);
                 this.inSession = false;
+                return;
             } else if (this.board.pieces === Math.pow(this.board.size, 2)) {
                 this.tie();
                 this.inSession = false;
+                return;
             }
+            this.nextPlayer();
         }
     }
 
-    wonBy() {
-        
+    wonBy(player) {
+        var status = document.getElementById('status');
+        status.innerHTML = `Player ${player.symbol} wins the game!`;
+        this.prevWinnerIndex = this.playerIndex;
     }
 
     tie() {
-        
+        var status = document.getElementById('status');
+        status.innerHTML = `It's a tie!`;
+    }
+
+    nextPlayer() {
+        this.playerIndex = this.prevWinnerIndex !== null ? this.prevWinnerIndex : this.playerIndex < this.players.length - 1 ? this.playerIndex + 1 : 0;
+        this.prevWinnerIndex = null;
+        this.currPlayer = this.players[this.playerIndex];
+        var status = document.getElementById('status');
+        status.innerHTML = `Player ${this.currPlayer.symbol}'s turn.`;
     }
 }
 
 window.onload = () => {
-    var board = new Board(5);
-    var playerOne = new Player('john', 'x');
-    var playerTwo = new Player('jack', 'o');
-    var playerThree = new Player('bill', 'y');
-    
-    var round = new Round(board, playerOne, playerTwo, playerThree);
-    
+    var board = new Board(3);
+    var playerOne = new Player('john', 'o');
+    var playerTwo = new Player('jack', 'x');
+
+    var round = new Round(board, playerOne, playerTwo);
+
     round.begin();
+
+    var reset = document.getElementById('reset');
+    reset.addEventListener('click', round.begin.bind(round));
 };
 
